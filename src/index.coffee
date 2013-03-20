@@ -78,14 +78,13 @@ class GlobArrayRun
     #return string paths
     @callback null, files.map (f) -> f.path
 
-globArray = (array, opts, callback) ->
+# globArray = 
+module.exports = (array, opts, callback) ->
   if typeof opts is 'function' and callback is `undefined`
     callback = opts
     opts = {}
   new GlobArrayRun(array, opts, callback)
   null
-
-module.exports = globArray
 
 # globArray([
 #     "./build/dev/scripts/init.js"

@@ -1,10 +1,10 @@
 {
   "name": "glob-manifest",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Another wrapper around node-glob which provides multi-matching. Main feature this package provides is a smart removal of duplicates to make it easy to build ordered file manifests.",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/coffee-script/bin/coffee -w -c -o ./ src/index.coffee"
+    "prepublish": "./node_modules/coffee-script/bin/coffee -c -o ./ src/index.coffee"
   },
   "repository": {
     "type": "git",
