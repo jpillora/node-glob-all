@@ -78,13 +78,20 @@ class GlobArrayRun
     #return string paths
     @callback null, files.map (f) -> f.path
 
-# globArray = 
-module.exports = (array, opts, callback) ->
+
+
+class GlobArrayAsync
+
+class GlobArraySync
+
+globArray = (array, opts, callback) ->
   if typeof opts is 'function' and callback is `undefined`
     callback = opts
     opts = {}
   new GlobArrayRun(array, opts, callback)
   null
+
+globArray.sync = globArray
 
 # globArray([
 #     "./build/dev/scripts/init.js"
@@ -98,6 +105,6 @@ module.exports = (array, opts, callback) ->
 
 
 
-
+module.exports
 
 
