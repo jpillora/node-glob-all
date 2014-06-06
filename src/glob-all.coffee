@@ -1,4 +1,4 @@
-glob = require "glob"
+Glob = require("glob").Glob
 async = require "async"
 
 # allows the use arrays with 'node-glob'
@@ -23,12 +23,20 @@ class File
     "#{@path} (#{@fileId}: #{@pattern}"
 
 class GlobAll
-  constructor: (@array, @opts, @callback) ->
+  constructor: (@array, @opts = {}, @callback) ->
     @sync = typeof @callback isnt 'function'
+    @opts.statCache = @opts.statCache or {}
+    @opts.sync = @sync
     @items = []
 
+  insertStatCache: (cache) ->
+    for k,v of cache
+      @opts.statCache[k] = v
+    return
+
   run: ->
-    async.parallel @array.filter((str, i) =>
+    async.series @array.filter((str, i) =>
+      #has a protocol - nonfile system
       if /^(\w+:)?\/\//.test str
         @items.push new File str, i
         return false
@@ -40,18 +48,20 @@ class GlobAll
 
   globOne: (pattern, globId) ->
     (callback) =>
-      gotFiles = (error, files) ->
+      g = null
+      gotFiles = (error, files) =>
         if files
           files = files.map (f, fileId) -> new File pattern, globId, f, fileId
+        @insertStatCache g.statCache if g
         callback error, files
         return
       #sync - callsback straight away
       if @sync
-        # console.log @opts
-        gotFiles null, glob.sync pattern, @opts
+        g = new Glob pattern, @opts
+        gotFiles null, g.found
       else
         #async      
-        glob pattern, @opts, gotFiles
+        g = new Glob pattern, @opts, gotFiles
       return
 
   globbedAll: (err, allFiles) ->

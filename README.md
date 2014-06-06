@@ -78,12 +78,12 @@ Which will bring `files/x/y.txt` to the top:
 
 You can use the `mark` option to mark directories with a `/`, then you can:
 ``` js
-files.filter(function(f) { return /\/$/.test(f); });
+files.filter(function(f) { return !/\/$/.test(f); });
 ```
 
-#### Todo
+#### Performance
 
-Optimisations
+Internally, `glob-all` uses the `statCache` option to prevent repeat lookups across multiple patterns.
 
 #### MIT License
 
