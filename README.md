@@ -1,6 +1,6 @@
 # glob-all
 
-Provides exactly the same API as [glob](https://github.com/isaacs/node-glob), however you may use arrays of patterns instead of a single pattern.
+Provides exactly the same API as [glob](https://github.com/isaacs/node-glob), however instead of a single pattern, you may also use arrays of patterns.
 
 ### Install
 
@@ -23,7 +23,7 @@ files
 
 We can:
 ``` js
-var glob = require('../');
+var glob = require('glob-all');
 
 var files = glob.sync([
   'files/**',      //include all     files/
@@ -43,12 +43,16 @@ Resulting in:
   'files/x/z.txt' ]
 ```
 
+#### API
+
+See [glob](https://github.com/isaacs/node-glob)
+
 #### File Order
 
-If a file occurs in more than once in the set, the one with the **more precise pattern** will be used. So, if you'd like a file be in a certain position, you could do:
+If a file occurs in more than once in the set, the one with the **more precise pattern** will be used and the other will be thrown away. So, if you'd like a file be in a certain position, you could do:
 
 ``` js
-var glob = require('../');
+var glob = require('glob-all');
 
 var files = glob.sync([
   'files/x/y.txt',
@@ -58,6 +62,8 @@ var files = glob.sync([
 console.log(files);
 ```
 
+Which will bring `files/x/y.txt` to the top:
+
 ```
 [ 'files/x/y.txt',
   'files',
@@ -66,6 +72,13 @@ console.log(files);
   'files/c.txt',
   'files/x',
   'files/x/z.txt' ]
+```
+
+#### Filtering out directories
+
+You can use the `mark` option to mark directories with a `/`, then you can:
+``` js
+files.filter(function(f) { return /\/$/.test(f); });
 ```
 
 #### Todo

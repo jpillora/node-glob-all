@@ -35,7 +35,7 @@ class GlobAll
       return true
     ).map((str, globId) =>
       @globOne str, globId
-    ), @complete.bind @
+    ), @globbedAll.bind @
     return @results
 
   globOne: (pattern, globId) ->
@@ -47,13 +47,14 @@ class GlobAll
         return
       #sync - callsback straight away
       if @sync
+        # console.log @opts
         gotFiles null, glob.sync pattern, @opts
       else
         #async      
         glob pattern, @opts, gotFiles
       return
 
-  complete: (err, allFiles) ->
+  globbedAll: (err, allFiles) ->
     #use object as set
     set = {}
 
@@ -63,8 +64,8 @@ class GlobAll
         path = f.path
         existing = set[path]
         #new item
-        if f.include and not existing
-          set[path] = f
+        if not existing          
+          set[path] = f if f.include
           continue
         #compare or delete
         if f.include
@@ -89,17 +90,17 @@ class GlobAll
     return @results
 
 #expose
-globall = module.exports = (array, opts, callback) ->
+globAll = module.exports = (array, opts, callback) ->
   if typeof array is 'string'
     array = [array]
   unless array instanceof Array
     throw new TypeError 'Invalid input'
-  if arguments.length is 2
+  if typeof opts is 'function'
     callback = opts
     opts = {}
   all = new GlobAll array, opts, callback
   return all.run()
 #sync is actually the same function :)
-globall.sync = globall
+globAll.sync = globAll
 
 
