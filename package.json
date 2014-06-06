@@ -1,26 +1,27 @@
 {
-  "name": "glob-manifest",
-  "version": "0.0.2",
-  "description": "Another wrapper around node-glob which provides multi-matching. Main feature this package provides is a smart removal of duplicates to make it easy to build ordered file manifests.",
-  "main": "index.js",
+  "name": "glob-all",
+  "version": "0.1.0",
+  "description": "Provide multiple patterns to node-glob",
+  "main": "glob-all.js",
   "scripts": {
-    "prepublish": "./node_modules/coffee-script/bin/coffee -c -o ./ src/index.coffee"
+    "prepublish": "./node_modules/coffee-script/bin/coffee -c -o ./ src/index.coffee",
+    "start": "./node_modules/coffee-script/bin/coffee  -w -c -o ./ src/index.coffee"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jpillora/node-glob-manifest.git"
+    "url": "https://github.com/jpillora/node-glob-all.git"
   },
   "dependencies": {
     "glob": "~3.1.21",
-    "async": "~0.2.6",
-    "lodash": "~1.0.1"
+    "async": "^0.9.0"
   },
   "devDependencies": {
-    "coffee-script": "~1.6.2"
+    "coffee-script": "^1.7.1"
   },
   "keywords": [
     "glob",
     "multi",
+    "all",
     "manifest",
     "generation",
     "file"

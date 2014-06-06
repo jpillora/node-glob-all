@@ -1,3 +1,96 @@
-#glob-manifest
+# glob-all
 
-| Another wrapper around node-glob which provides multi-matching. Main feature this package provides is a smart removal of duplicates to make it easy to build ordered file manifests.
+Provides exactly the same API as [glob](https://github.com/isaacs/node-glob), however you may use arrays of patterns instead of a single pattern.
+
+### Install
+
+```
+npm install --save glob-all
+```
+
+### Usage
+
+Given files:
+```
+files
+├── a.txt
+├── b.txt
+├── c.txt
+└── x
+    ├── y.txt
+    └── z.txt
+```
+
+We can:
+``` js
+var glob = require('../');
+
+var files = glob.sync([
+  'files/**',      //include all     files/
+  '!files/x/**',   //then, exclude   files/x/
+  'files/x/z.txt'  //then, reinclude files/x/z.txt
+]);
+
+console.log(files);
+```
+
+Resulting in:
+```
+[ 'files',
+  'files/a.txt',
+  'files/b.txt',
+  'files/c.txt',
+  'files/x/z.txt' ]
+```
+
+#### File Order
+
+If a file occurs in more than once in the set, the one with the **more precise pattern** will be used. So, if you'd like a file be in a certain position, you could do:
+
+``` js
+var glob = require('../');
+
+var files = glob.sync([
+  'files/x/y.txt',
+  'files/**'
+]);
+
+console.log(files);
+```
+
+```
+[ 'files/x/y.txt',
+  'files',
+  'files/a.txt',
+  'files/b.txt',
+  'files/c.txt',
+  'files/x',
+  'files/x/z.txt' ]
+```
+
+#### Todo
+
+Optimisations
+
+#### MIT License
+
+Copyright &copy; 2014 Jaime Pillora &lt;dev@jpillora.com&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
