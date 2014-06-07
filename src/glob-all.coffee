@@ -44,19 +44,18 @@ class GlobAll
 
   globOne: (pattern, globId) ->
     (callback) =>
-      g = null
       gotFiles = (error, files) =>
         if files
           files = files.map (f, fileId) -> new File pattern, globId, f, fileId
         callback error, files
         return
-      #sync - callsback straight away
       if @sync
-        g = new Glob pattern, @opts
+        #sync - callback straight away
+        new Glob pattern, @opts
         gotFiles null, g.found
       else
         #async      
-        g = new Glob pattern, @opts, gotFiles
+        new Glob pattern, @opts, gotFiles
       return
 
   globbedAll: (err, allFiles) ->
@@ -79,7 +78,8 @@ class GlobAll
 
     #map remaing files into an array
     files = []
-    files.push v for k,v of set
+    for k,v of set
+      files.push v
 
     #sort files by index
     files.sort (a,b) ->

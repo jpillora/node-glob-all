@@ -70,8 +70,7 @@
     GlobAll.prototype.globOne = function(pattern, globId) {
       return (function(_this) {
         return function(callback) {
-          var g, gotFiles;
-          g = null;
+          var gotFiles;
           gotFiles = function(error, files) {
             if (files) {
               files = files.map(function(f, fileId) {
@@ -81,10 +80,10 @@
             callback(error, files);
           };
           if (_this.sync) {
-            g = new Glob(pattern, _this.opts);
+            new Glob(pattern, _this.opts);
             gotFiles(null, g.found);
           } else {
-            g = new Glob(pattern, _this.opts, gotFiles);
+            new Glob(pattern, _this.opts, gotFiles);
           }
         };
       })(this);
