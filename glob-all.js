@@ -50,14 +50,6 @@
       this.items = [];
     }
 
-    GlobAll.prototype.insertStatCache = function(cache) {
-      var k, v;
-      for (k in cache) {
-        v = cache[k];
-        this.opts.statCache[k] = v;
-      }
-    };
-
     GlobAll.prototype.run = function() {
       async.series(this.array.filter((function(_this) {
         return function(str, i) {
@@ -85,9 +77,6 @@
               files = files.map(function(f, fileId) {
                 return new File(pattern, globId, f, fileId);
               });
-            }
-            if (g) {
-              _this.insertStatCache(g.statCache);
             }
             callback(error, files);
           };

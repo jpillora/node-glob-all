@@ -25,14 +25,10 @@ class File
 class GlobAll
   constructor: (@array, @opts = {}, @callback) ->
     @sync = typeof @callback isnt 'function'
+    #all globs share the same stat cache
     @opts.statCache = @opts.statCache or {}
     @opts.sync = @sync
     @items = []
-
-  insertStatCache: (cache) ->
-    for k,v of cache
-      @opts.statCache[k] = v
-    return
 
   run: ->
     async.series @array.filter((str, i) =>
@@ -52,7 +48,6 @@ class GlobAll
       gotFiles = (error, files) =>
         if files
           files = files.map (f, fileId) -> new File pattern, globId, f, fileId
-        @insertStatCache g.statCache if g
         callback error, files
         return
       #sync - callsback straight away
@@ -67,7 +62,6 @@ class GlobAll
   globbedAll: (err, allFiles) ->
     #use object as set
     set = {}
-
     #include and exclude
     for files in allFiles
       for f in files
