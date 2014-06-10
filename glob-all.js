@@ -64,7 +64,6 @@
       if (sync !== (typeof callback !== 'function')) {
         throw new Error("shoud" + (sync ? ' not' : '') + " have callback");
       }
-      this.cache = opts.cache = opts.cache || {};
       this.statCache = opts.statCache = opts.statCache || {};
       opts.sync = sync;
       this.opts = opts;

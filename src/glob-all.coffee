@@ -42,8 +42,7 @@ class GlobAll extends EventEmitter
     if sync isnt (typeof callback isnt 'function')
       throw new Error "shoud#{if sync then ' not' else ''} have callback"
 
-    #all globs share the same cache / stat cache
-    @cache = opts.cache = opts.cache or {}
+    #all globs share the same stat cache
     @statCache = opts.statCache = opts.statCache or {}
     opts.sync = sync
     @opts = opts
