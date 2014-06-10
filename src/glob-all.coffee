@@ -1,11 +1,10 @@
 Glob = require("glob").Glob
-async = require "async"
+EventEmitter = require("events").EventEmitter
 
-# allows the use arrays with 'node-glob'
-# interatively combines the resulting arrays
-# api is exactly the same
+# helper class to store and compare glob results
 class File
-  constructor: (@pattern, @globId, @path, @fileId) ->
+  stars: /((\/\*\*)?\/\*)?\.(\w+)$/,
+  constructor: (@pattern, @patternId, @path, @fileId) ->
     @include = true
     while @pattern.charAt(0) is "!"
       @include = not @include
@@ -14,97 +13,129 @@ class File
   #strip stars and compare pattern length
   #longest length wins
   compare: (other) ->
-    stars = /((\/\*\*)?\/\*)?\.(\w+)$/
-    p1 = @pattern.replace stars, ''
-    p2 = other.pattern.replace stars, ''
+    p1 = @pattern.replace @stars, ''
+    p2 = other.pattern.replace @stars, ''
     if p1.length > p2.length then @ else other
 
   toString: ->
-    "#{@path} (#{@fileId}: #{@pattern}"
+    "#{@path} (#{@patternId}: #{@fileId}: #{@pattern})"
 
-class GlobAll
-  constructor: (@array, @opts = {}, @callback) ->
-    @sync = typeof @callback isnt 'function'
-    #all globs share the same stat cache
-    @opts.statCache = @opts.statCache or {}
-    @opts.sync = @sync
-    @items = []
+# allows the use arrays with 'node-glob'
+# interatively combines the resulting arrays
+# api is exactly the same
+class GlobAll extends EventEmitter
+  constructor: (sync, patterns, opts = {}, callback) ->
+    super()
+    #init array
+    if typeof patterns is 'string'
+      patterns = [patterns]
+    unless patterns instanceof Array
+      throw new TypeError 'Invalid input'
+    @patterns = patterns
+
+    #no opts provided
+    if typeof opts is 'function'
+      callback = opts
+      opts = {}
+
+    #allow sync+nocallback or asunc+callback
+    if sync isnt (typeof callback isnt 'function')
+      throw new Error "shoud#{if sync then ' not' else ''} have callback"
+
+    #all globs share the same cache / stat cache
+    @cache = opts.cache = opts.cache or {}
+    @statCache = opts.statCache = opts.statCache or {}
+    opts.sync = sync
+    @opts = opts
+
+    @set = {}
+    @results = null
+    @globs = []
+
+    @callback = callback
+
+    #bound functions
+    @globbedOne = @globbedOne.bind @
 
   run: ->
-    async.series @array.filter((str, i) =>
-      #has a protocol - nonfile system
-      if /^(\w+:)?\/\//.test str
-        @items.push new File str, i
-        return false
-      return true
-    ).map((str, globId) =>
-      @globOne str, globId
-    ), @globbedAll.bind @
+    @globNext()
     return @results
 
-  globOne: (pattern, globId) ->
-    (callback) =>
-      gotFiles = (error, files) =>
-        if files
-          files = files.map (f, fileId) -> new File pattern, globId, f, fileId
-        callback error, files
-        return
-      if @sync
-        #sync - callback straight away
-        new Glob pattern, @opts
-        gotFiles null, g.found
-      else
-        #async      
-        new Glob pattern, @opts, gotFiles
-      return
+  globNext: ->
+    if @patterns.length is 0
+      return @globbedAll()
+    pattern = @patterns[0] #peek!
+    #run
+    if @opts.sync
+      #sync - callback straight away
+      g = new Glob pattern, @opts
+      @globs.push g
+      @globbedOne null, g.found
+    else
+      #async      
+      g = new Glob pattern, @opts, @globbedOne
+      @globs.push g
+    return
 
-  globbedAll: (err, allFiles) ->
-    #use object as set
-    set = {}
-    #include and exclude
-    for files in allFiles
-      for f in files
-        path = f.path
-        existing = set[path]
-        #new item
-        if not existing          
-          set[path] = f if f.include
-          continue
-        #compare or delete
+  #collect results
+  globbedOne: (err, files) ->
+    patternId  = @patterns.length
+    pattern = @patterns.shift()
+    #insert each into the results set
+    for path, fileId in files
+      #convert to file instance
+      f = new File pattern, patternId, path, fileId
+      existing = @set[path]
+      #new item
+      if not existing          
         if f.include
-          set[path] = f.compare existing
-        else
-          delete set[path]
+          @set[path] = f
+          @emit 'match', path
+        continue
+      #compare or delete
+      if f.include
+        @set[path] = f.compare existing
+      else
+        delete @set[path]
+    #callback error
+    if err
+      @emit 'error', err
+      @removeAllListeners()
+      @callback err if @callback
+    #run next
+    else
+      @globNext()
+    return
 
-    #map remaing files into an array
+  globbedAll: ->
+    #map result set into an array
     files = []
-    for k,v of set
+    for k,v of @set
       files.push v
-
     #sort files by index
     files.sort (a,b) ->
-      return -1 if a.globId < b.globId 
-      return 1 if a.globId > b.globId 
+      return -1 if a.patternId < b.patternId 
+      return 1 if a.patternId > b.patternId 
       return if a.fileId >= b.fileId then 1 else -1
-
-    @results = files.map (f) -> f.path
+    #finally, convert back into a path string
+    @results = files.map (f) ->
+      f.path
+    @emit 'end'
+    @removeAllListeners()
     #return string paths
-    unless @sync
+    unless @opts.sync
       @callback null, @results
     return @results
 
 #expose
 globAll = module.exports = (array, opts, callback) ->
-  if typeof array is 'string'
-    array = [array]
-  unless array instanceof Array
-    throw new TypeError 'Invalid input'
-  if typeof opts is 'function'
-    callback = opts
-    opts = {}
-  all = new GlobAll array, opts, callback
-  return all.run()
+  g = new GlobAll false, array, opts, callback
+  g.run()
+  return g
+
 #sync is actually the same function :)
-globAll.sync = globAll
+globAll.sync = (array, opts) ->
+  g = new GlobAll true, array, opts
+  return g.run()
 
 

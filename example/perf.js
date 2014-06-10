@@ -1,7 +1,7 @@
 var glob = require('../');
 
 var t = Date.now();
-glob([,
+glob([
   '**',
   '!**/*.js'
 ], {

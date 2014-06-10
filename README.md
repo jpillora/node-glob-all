@@ -1,6 +1,6 @@
 # glob-all
 
-Provides exactly the same API as [glob](https://github.com/isaacs/node-glob), however instead of a single pattern, you may also use arrays of patterns.
+Provides a similar API to [glob](https://github.com/isaacs/node-glob), however instead of a single pattern, you may also use arrays of patterns.
 
 ### Install
 
@@ -43,9 +43,26 @@ Resulting in:
   'files/x/z.txt' ]
 ```
 
-#### API
+### API
 
-See [glob](https://github.com/isaacs/node-glob)
+* Async - `glob(patterns[, options], callback)`
+  * Returns a `GlobAll` instance which emits:
+    * `match`
+    * `error`
+    * `end`
+
+* Sync - `glob.sync(patterns[, options])`
+  * Returns `[String]` or `null`
+
+See [node-glob](https://github.com/isaacs/node-glob)
+
+### Notes
+
+#### Exclude Pattern
+
+Since [node-glob](https://github.com/isaacs/node-glob) only allows one pattern, there is no such thing as an exclude pattern (like in Grunt and Gulp). However, in `node-glob-all` we allow exclusion of the results of an entire pattern by prefixing the pattern with `!`.
+
+[node-glob](https://github.com/isaacs/node-glob) exclusions (`!` inside the pattern) to exclude a portion of the path will still work as expected.
 
 #### File Order
 
@@ -84,6 +101,17 @@ files.filter(function(f) { return !/\/$/.test(f); });
 #### Performance
 
 Internally, `glob-all` uses the `statCache` option to prevent repeat lookups across multiple patterns.
+
+#### Todo
+
+* Implement `abort()`
+* Add tests
+
+#### Contributing
+
+* `npm install`
+* `npm start`
+* Edit `src/index.coffee`
 
 #### MIT License
 

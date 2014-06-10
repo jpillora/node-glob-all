@@ -1,6 +1,6 @@
 {
   "name": "glob-all",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Provide multiple patterns to node-glob",
   "main": "glob-all.js",
   "scripts": {
@@ -12,8 +12,7 @@
     "url": "https://github.com/jpillora/node-glob-all.git"
   },
   "dependencies": {
-    "glob": "~3.1.21",
-    "async": "^0.9.0"
+    "glob": "~3.1.21"
   },
   "devDependencies": {
     "coffee-script": "^1.7.1"
