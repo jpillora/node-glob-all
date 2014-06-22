@@ -38,9 +38,9 @@ class GlobAll extends EventEmitter
       callback = opts
       opts = {}
 
-    #allow sync+nocallback or asunc+callback
+    #allow sync+nocallback or async+callback
     if sync isnt (typeof callback isnt 'function')
-      throw new Error "shoud#{if sync then ' not' else ''} have callback"
+      throw new Error "should#{if sync then ' not' else ''} have callback"
 
     #all globs share the same stat cache
     @statCache = opts.statCache = opts.statCache or {}
