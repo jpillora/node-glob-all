@@ -62,7 +62,7 @@
         opts = {};
       }
       if (sync !== (typeof callback !== 'function')) {
-        throw new Error("shoud" + (sync ? ' not' : '') + " have callback");
+        throw new Error("should" + (sync ? ' not' : '') + " have callback");
       }
       this.statCache = opts.statCache = opts.statCache || {};
       opts.sync = sync;
