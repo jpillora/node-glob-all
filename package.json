@@ -3,6 +3,9 @@
   "version": "2.4.1",
   "description": "Provide multiple patterns to node-glob",
   "main": "glob-all.js",
+  "bin": {
+    "glob-all": "./bin/glob-all"
+  },
   "scripts": {
     "prepublish": "./node_modules/coffee-script/bin/coffee -c -o ./ src/glob-all.coffee",
     "start": "./node_modules/coffee-script/bin/coffee  -w -c -o ./ src/glob-all.coffee"
@@ -12,7 +15,8 @@
     "url": "https://github.com/jpillora/node-glob-all.git"
   },
   "dependencies": {
-    "glob": "~3.1.21"
+    "glob": "~3.1.21",
+    "yargs": "~1.2.6"
   },
   "devDependencies": {
     "coffee-script": "^1.7.1"

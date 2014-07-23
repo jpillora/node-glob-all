@@ -43,6 +43,16 @@ Resulting in:
   'files/x/z.txt' ]
 ```
 
+### CLI Usage
+
+`npm install -g glob-all`
+
+If you want to list all javascript files in your project, but ignore 3rd-party modules:
+
+```
+glob-all '**/*.js' '!node_modules/**/*'
+```
+
 ### API
 
 * Async - `glob(patterns[, options], callback)`
