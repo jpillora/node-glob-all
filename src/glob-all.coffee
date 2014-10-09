@@ -113,8 +113,8 @@ class GlobAll extends EventEmitter
       files.push v
     #sort files by index
     files.sort (a,b) ->
-      return -1 if a.patternId < b.patternId 
-      return 1 if a.patternId > b.patternId 
+      return 1 if a.patternId < b.patternId 
+      return -1 if a.patternId > b.patternId 
       return if a.fileId >= b.fileId then 1 else -1
     #finally, convert back into a path string
     @results = files.map (f) ->

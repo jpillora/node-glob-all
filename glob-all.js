@@ -137,10 +137,10 @@
       }
       files.sort(function(a, b) {
         if (a.patternId < b.patternId) {
-          return -1;
+          return 1;
         }
         if (a.patternId > b.patternId) {
-          return 1;
+          return -1;
         }
         if (a.fileId >= b.fileId) {
           return 1;
