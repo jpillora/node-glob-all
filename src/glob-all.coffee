@@ -80,7 +80,7 @@ class GlobAll extends EventEmitter
   globbedOne: (err, files) ->
     #handle callback error early
     if err
-      @emit 'error', err
+      @emit 'error', err if !@callback
       @removeAllListeners()
       @callback err if @callback
       return;

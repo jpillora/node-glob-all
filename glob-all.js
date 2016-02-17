@@ -98,7 +98,9 @@
     GlobAll.prototype.globbedOne = function(err, files) {
       var existing, f, fileId, path, pattern, patternId, _i, _len;
       if (err) {
-        this.emit('error', err);
+        if (!this.callback) {
+          this.emit('error', err);
+        }
         this.removeAllListeners();
         if (this.callback) {
           this.callback(err);
