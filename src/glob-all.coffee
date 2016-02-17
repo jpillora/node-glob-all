@@ -78,6 +78,12 @@ class GlobAll extends EventEmitter
 
   #collect results
   globbedOne: (err, files) ->
+    #handle callback error early
+    if err
+      @emit 'error', err
+      @removeAllListeners()
+      @callback err if @callback
+      return;
     patternId  = @patterns.length
     pattern = @patterns.shift()
     #insert each into the results set
@@ -96,14 +102,8 @@ class GlobAll extends EventEmitter
         @set[path] = f.compare existing
       else
         delete @set[path]
-    #callback error
-    if err
-      @emit 'error', err
-      @removeAllListeners()
-      @callback err if @callback
     #run next
-    else
-      @globNext()
+    @globNext()
     return
 
   globbedAll: ->
