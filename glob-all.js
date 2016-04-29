@@ -97,6 +97,16 @@
 
     GlobAll.prototype.globbedOne = function(err, files) {
       var existing, f, fileId, path, pattern, patternId, _i, _len;
+      if (err) {
+        if (!this.callback) {
+          this.emit('error', err);
+        }
+        this.removeAllListeners();
+        if (this.callback) {
+          this.callback(err);
+        }
+        return;
+      }
       patternId = this.patterns.length;
       pattern = this.patterns.shift();
       for (fileId = _i = 0, _len = files.length; _i < _len; fileId = ++_i) {
@@ -116,15 +126,7 @@
           delete this.set[path];
         }
       }
-      if (err) {
-        this.emit('error', err);
-        this.removeAllListeners();
-        if (this.callback) {
-          this.callback(err);
-        }
-      } else {
-        this.globNext();
-      }
+      this.globNext();
     };
 
     GlobAll.prototype.globbedAll = function() {
