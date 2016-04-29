@@ -31,28 +31,23 @@ class GlobAll extends EventEmitter
       patterns = [patterns]
     unless patterns instanceof Array
       throw new TypeError 'Invalid input'
-    @patterns = patterns
-
+    #use copy of array
+    @patterns = patterns.slice()
     #no opts provided
     if typeof opts is 'function'
       callback = opts
       opts = {}
-
     #allow sync+nocallback or async+callback
     if sync isnt (typeof callback isnt 'function')
       throw new Error "should#{if sync then ' not' else ''} have callback"
-
     #all globs share the same stat cache
     @statCache = opts.statCache = opts.statCache or {}
     opts.sync = sync
     @opts = opts
-
     @set = {}
     @results = null
     @globs = []
-
     @callback = callback
-
     #bound functions
     @globbedOne = @globbedOne.bind @
 
@@ -71,7 +66,7 @@ class GlobAll extends EventEmitter
       @globs.push g
       @globbedOne null, g.found
     else
-      #async      
+      #async
       g = new Glob pattern, @opts, @globbedOne
       @globs.push g
     return
@@ -92,7 +87,7 @@ class GlobAll extends EventEmitter
       f = new File pattern, patternId, path, fileId
       existing = @set[path]
       #new item
-      if not existing          
+      if not existing
         if f.include
           @set[path] = f
           @emit 'match', path
@@ -113,8 +108,8 @@ class GlobAll extends EventEmitter
       files.push v
     #sort files by index
     files.sort (a,b) ->
-      return 1 if a.patternId < b.patternId 
-      return -1 if a.patternId > b.patternId 
+      return 1 if a.patternId < b.patternId
+      return -1 if a.patternId > b.patternId
       return if a.fileId >= b.fileId then 1 else -1
     #finally, convert back into a path string
     @results = files.map (f) ->
@@ -136,5 +131,3 @@ globAll = module.exports = (array, opts, callback) ->
 globAll.sync = (array, opts) ->
   g = new GlobAll true, array, opts
   return g.run()
-
-

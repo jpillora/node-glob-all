@@ -2,6 +2,8 @@
 
 Provides a similar API to [glob](https://github.com/isaacs/node-glob), however instead of a single pattern, you may also use arrays of patterns.
 
+[![NPM version](https://nodei.co/npm/glob-all.png?compact=true)](https://npmjs.org/package/glob-all)
+
 ### Install
 
 ```
@@ -41,6 +43,27 @@ Resulting in:
   'files/b.txt',
   'files/c.txt',
   'files/x/z.txt' ]
+```
+
+### CLI Usage
+
+`npm install -g glob-all`
+
+List all JavaScript files in `example/`
+
+```
+$ glob-all 'example/**/*.js'
+example/async.js
+example/events.js
+example/order.js
+example/perf.js
+example/sync.js
+```
+
+Or list all JavaScript files but ignore 3rd-party modules:
+
+```
+$ glob-all '**/*.js' '!node_modules/**/*'
 ```
 
 ### API

@@ -56,7 +56,7 @@
       if (!(patterns instanceof Array)) {
         throw new TypeError('Invalid input');
       }
-      this.patterns = patterns;
+      this.patterns = patterns.slice();
       if (typeof opts === 'function') {
         callback = opts;
         opts = {};
