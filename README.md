@@ -132,9 +132,8 @@ Internally, `glob-all` uses the `statCache` option to prevent repeat lookups acr
 
 #### Contributing
 
-* `npm install`
-* `npm start`
-* Edit `src/index.coffee`
+* edit `glob-all.js`
+* `npm test`
 
 #### MIT License
 

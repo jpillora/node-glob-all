@@ -7,8 +7,7 @@
     "glob-all": "./bin/glob-all"
   },
   "scripts": {
-    "prepublish": "./node_modules/coffee-script/bin/coffee -c -o ./ src/glob-all.coffee",
-    "start": "./node_modules/coffee-script/bin/coffee  -w -c -o ./ src/glob-all.coffee"
+    "test": "node test/test.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +18,7 @@
     "yargs": "~1.2.6"
   },
   "devDependencies": {
-    "coffee-script": "^1.7.1"
+    "tape": "^4.5.1"
   },
   "keywords": [
     "glob",
