@@ -14,7 +14,7 @@
     "url": "https://github.com/jpillora/node-glob-all.git"
   },
   "dependencies": {
-    "glob": "^4.0.6",
+    "glob": "^7.0.5",
     "yargs": "~1.2.6"
   },
   "devDependencies": {

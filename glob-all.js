@@ -80,26 +80,35 @@ GlobAll.prototype.run = function() {
 };
 
 GlobAll.prototype.globNext = function() {
-  var g, pattern;
+  var g, pattern, include = true;
   if (this.patterns.length === 0) {
     return this.globbedAll();
   }
   pattern = this.patterns[0]; // peek!
+  // check whether this is an exclude pattern and
+  // strip the leading ! if it is
+  if (pattern.charAt(0) === "!") {
+    include = false;
+    pattern = pattern.substr(1);
+  }
   // run
   if (this.opts.sync) {
     // sync - callback straight away
     g = new Glob(pattern, this.opts);
     this.globs.push(g);
-    this.globbedOne(null, g.found);
+    this.globbedOne(null, include, g.found);
   } else {
     // async
-    g = new Glob(pattern, this.opts, this.globbedOne);
+    var self = this;
+    g = new Glob(pattern, this.opts, function(err, files) {
+      self.globbedOne(err, include, files);
+    });
     this.globs.push(g);
   }
 };
 
 // collect results
-GlobAll.prototype.globbedOne = function(err, files) {
+GlobAll.prototype.globbedOne = function(err, include, files) {
   // handle callback error early
   if (err) {
     if (!this.callback) {
@@ -121,14 +130,14 @@ GlobAll.prototype.globbedOne = function(err, files) {
     var existing = this.set[path];
     // new item
     if (!existing) {
-      if (f.include) {
+      if (include) {
         this.set[path] = f;
         this.emit("match", path);
       }
       continue;
     }
     // compare or delete
-    if (f.include) {
+    if (include) {
       this.set[path] = f.compare(existing);
     } else {
       delete this.set[path];
