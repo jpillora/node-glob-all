@@ -2,7 +2,7 @@
 
 Provides a similar API to [glob](https://github.com/isaacs/node-glob), however instead of a single pattern, you may also use arrays of patterns.
 
-[![NPM version](https://nodei.co/npm/glob-all.png?compact=true)](https://npmjs.org/package/glob-all)
+[![Version](https://img.shields.io/npm/v/glob-all.svg)](https://www.npmjs.com/package/glob-all)  [![Downloads](https://img.shields.io/npm/dm/glob-all.svg)](https://www.npmjs.com/package/glob-all) [![CircleCI](https://circleci.com/gh/jpillora/node-glob-all.svg?style=shield)](https://circleci.com/gh/jpillora/node-glob-all)
 
 ### Install
 
