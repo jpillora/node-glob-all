@@ -1,6 +1,6 @@
 {
   "name": "glob-all",
-  "version": "3.2.1",
+  "version": "3.3.0",
   "description": "Provide multiple patterns to node-glob",
   "main": "glob-all.js",
   "bin": {
