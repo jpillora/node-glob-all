@@ -1,6 +1,6 @@
 {
   "name": "glob-all",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "Provide multiple patterns to node-glob",
   "main": "glob-all.js",
   "bin": {
@@ -14,11 +14,11 @@
     "url": "https://github.com/jpillora/node-glob-all.git"
   },
   "dependencies": {
-    "glob": "^7.1.2",
+    "glob": "^7.2.3",
     "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "tape": "^4.9.0"
+    "tape": "^4.16.1"
   },
   "keywords": [
     "glob",
